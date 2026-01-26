@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <title>Moodex - 听懂你，更记得住你</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-color: #6366f1; /* 柔和的紫蓝色 */
+            --secondary-color: #4f46e5;
+            --text-color: #1f2937;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        /* 导航栏 */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* 语言切换器 (Dropdown) */
+        .lang-dropdown {
+            position: relative;
+            display: inline-block;
+            margin-left: 20px;
+        }
+
+        .lang-dropbtn {
+            background: #f1f5f9;
+            color: #64748b;
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .lang-dropbtn:hover {
+            background: #e2e8f0;
+            color: var(--primary-color);
+        }
+
+        .lang-dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%; /* 紧贴父元素底部 */
+            padding-top: 8px; /* 使用 padding 代替 margin 填充间距 */
+            background-color: transparent; /* 背景透明，内部容器再设白色 */
+            min-width: 160px; /* 增加宽度以适应完整文字 */
+            z-index: 1001;
+        }
+
+        /* 内部真正的白色卡片 */
+        .lang-dropdown-inner {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border: 1px solid #f1f5f9;
+            overflow: hidden;
+        }
+
+        .lang-dropdown-content span {
+            color: #64748b;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .lang-dropdown-content span:hover {
+            background-color: #f8fafc;
+            color: var(--primary-color);
+        }
+
+        .lang-dropdown-content span.active {
+            color: var(--primary-color);
+            background-color: #eff6ff;
+            font-weight: 700;
+        }
+
+        /* 改为通过 active 类控制显示，同时也保留 hover 以增强体验 */
+        .lang-dropdown.active .lang-dropdown-content,
+        .lang-dropdown:hover .lang-dropdown-content {
+            display: block;
+        }
+
+        .lang-dropdown.active .lang-dropbtn,
+        .lang-dropdown:hover .lang-dropbtn {
+            background: #e2e8f0;
+            color: var(--primary-color);
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            margin-left: 20px;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        /* 英雄区域 (Header) */
+        .hero {
+            padding: 160px 5% 100px;
+            text-align: center;
+            background: radial-gradient(circle at top right, #e0e7ff, transparent 40%),
+                        radial-gradient(circle at bottom left, #e0e7ff, transparent 40%);
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            /* 移除 H1 直接的渐变，改为在内部 span 应用，避免影响光标 */
+            color: #1e293b; 
+        }
+
+        /* 渐变文字效果 */
+        #typewriter-text {
+            background: linear-gradient(135deg, #4f46e5 0%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* 打字机光标效果 */
+        .cursor {
+            display: inline-block;
+            width: 3px;
+            background-color: #6366f1;
+            animation: blink 1s step-end infinite;
+            margin-left: 5px;
+            vertical-align: middle;
+            height: 1em; /* 调整光标高度 */
+            position: relative;
+            top: -0.1em; /* 微调垂直位置 */
+        }
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background-color: #000;
+            color: #fff;
+            padding: 15px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+
+        /* 特性区域 */
+        .features {
+            padding: 60px 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* 稍微调小最小宽度以容纳更多卡片 */
+            gap: 30px;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+            border: 1px solid rgba(0,0,0,0.03);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border-color: var(--primary-color);
+        }
+
+        .feature-card:hover .icon-box {
+            background: var(--primary-color);
+            color: white;
+            transform: scale(1.1);
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover .chart-container {
+            transform: scale(1.02);
+            transition: transform 0.3s;
+        }
+
+        .icon-box {
+            width: 48px;
+            height: 48px;
+            background: #eef2ff;
+            color: var(--primary-color);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 10px;
+            font-size: 1.15rem;
+            color: #111827;
+        }
+
+        .feature-card p {
+            color: #6b7280;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* 图表容器 */
+        .chart-container {
+            width: 100%;
+            height: 200px;
+            margin-top: 20px;
+            position: relative;
+        }
+
+        /* 城市地图可视化 */
+        .map-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: #f8fafc;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #f1f5f9;
+        }
+
+        .city-marker {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+        }
+
+        .city-marker.high { background-color: #22c55e; }
+        .city-marker.low { background-color: #ef4444; }
+
+        .city-label {
+            position: absolute;
+            font-size: 10px;
+            color: #64748b;
+            white-space: nowrap;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .ripple {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: ripple-out 2s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+        }
+
+        .city-marker.high .ripple { border: 2px solid rgba(34, 197, 94, 0.5); }
+        .city-marker.low .ripple { border: 2px solid rgba(239, 68, 68, 0.5); }
+
+        .ripple:nth-child(2) { animation-delay: 0.5s; }
+        .ripple:nth-child(3) { animation-delay: 1s; }
+
+        @keyframes ripple-out {
+            0% { width: 0; height: 0; opacity: 1; }
+            100% { width: 50px; height: 50px; opacity: 0; }
+        }
+
+        /* 内测白名单区域 */
+        .waitlist-section {
+            padding: 80px 5%;
+            margin: 60px 5%;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 24px;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+        }
+
+        .waitlist-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .waitlist-section h2 {
+            font-size: 2rem;
+            margin-bottom: 16px;
+            color: #1e293b;
+        }
+
+        .waitlist-section p {
+            color: #64748b;
+            margin-bottom: 32px;
+            font-size: 1.1rem;
+        }
+
+        .waitlist-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            text-decoration: none;
+            gap: 8px;
+        }
+
+        .waitlist-btn:hover {
+            background: var(--secondary-color);
+        }
+        
+        .waitlist-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* 页脚 */
+        footer {
+            text-align: center;
+            padding: 40px 5%;
+            border-top: 1px solid #e5e7eb;
+            color: #9ca3af;
+            font-size: 0.9rem;
+            margin-top: 0;
+            background-color: #fff;
+        }
+
+        footer a {
+            color: #6b7280;
+            text-decoration: none;
+            margin: 0 10px;
+            transition: color 0.2s;
+        }
+        
+        footer a:hover {
+            color: var(--primary-color);
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            .nav-links { display: none; } /* 优化：在移动端隐藏顶部导航链接，避免换行 */
+            .hero { padding-top: 120px; }
+            .hero h1 { font-size: 2.5rem; min-height: 3.6rem; /* 防止文字切换时高度跳动 */ }
+            .hero p { font-size: 1.1rem; }
+            .features { grid-template-columns: 1fr; }
+            
+            .waitlist-section {
+                margin: 40px 20px;
+                padding: 40px 20px;
+            }
+        }
+
+        /* 打字机光标效果 */
+        .cursor {
+            display: inline-block;
+            width: 3px;
+            background-color: #6366f1;
+            animation: blink 1s step-end infinite;
+            margin-left: 5px;
+            vertical-align: middle;
+            height: 1em;
+            position: relative;
+            top: -0.1em;
+        }
+
+        @keyframes blink {
+            from, to { opacity: 1; }
+            50% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="#" class="logo">
+            <i class="fa-solid fa-microphone-lines"></i> Moodex
+        </a>
+        <div style="display: flex; align-items: center;">
+            <div class="nav-links">
+                <a href="#waitlist" data-t="nav_waitlist">申请成为种子用户</a>
+            </div>
+            <div class="lang-dropdown">
+                <button class="lang-dropbtn" id="current-lang-btn" onclick="toggleLangDropdown(event)">
+                    <i class="fa-solid fa-globe"></i>
+                    <span>ZH</span>
+                    <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem; opacity: 0.5;"></i>
+                </button>
+                <div class="lang-dropdown-content">
+                    <div class="lang-dropdown-inner">
+                        <span onclick="switchLang('zh')" id="lang-zh">简体中文</span>
+                        <span onclick="switchLang('en')" id="lang-en">English</span>
+                        <span onclick="switchLang('id')" id="lang-id">Bahasa Indonesia</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <h1 style="min-height: 1.2em;">
+            <span id="typewriter-text"></span><span class="cursor">&nbsp;</span>
+        </h1>
+        <p data-t="hero_p">不再对着虚空倾诉。一款能听懂弦外之音、并能从你的一生记忆中寻找答案的 AI 语音日记。</p>
+        
+        <a href="#waitlist" class="cta-button">
+            <i class="fa-brands fa-apple"></i>
+            <span data-t="hero_cta">申请成为种子用户</span>
+        </a>
+    </header>
+
+    <div style="text-align: center; padding: 60px 5% 0;">
+        <h2 style="font-size: 2.5rem; margin-bottom: 10px; color: #1e293b;" data-t="features_title">核心功能展示</h2>
+        <p style="color: #64748b; max-width: 600px; margin: 0 auto;" data-t="features_subtitle">结合最前沿的 AI 技术，为你提供全方位的情绪洞察与管理。</p>
+    </div>
+
+    <section class="features">
+        <!-- 0. AI 对话 -->
+        <div class="feature-card">
+            <div class="icon-box"><i class="fa-solid fa-comments"></i></div>
+            <h3 data-t="f0_title">AI 情绪对话</h3>
+            <p data-t="f0_desc">基于你的记录，利用 RAG+LLM 提供个性化对话，杜绝幻觉，比任何人都更懂你。</p>
+            <div class="chart-container" id="chatContainer">
+                <div style="display: flex; flex-direction: column; gap: 8px; padding: 10px; width: 100%;">
+                    <div style="background: #eef2ff; padding: 8px 12px; border-radius: 12px 12px 12px 0; align-self: flex-start; font-size: 0.8rem; color: #4f46e5; max-width: 80%;">"最近感觉有点累..."</div>
+                    <div style="background: #f1f5f9; padding: 8px 12px; border-radius: 12px 12px 0 12px; align-self: flex-end; font-size: 0.8rem; color: #64748b; max-width: 80%;">"我记得你上周二也提到过类似的疲惫，可能和那个项目有关？要不要聊聊？"</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 1. 语音记录 -->
+        <div class="feature-card">
+            <div class="icon-box"><i class="fa-solid fa-microphone"></i></div>
+            <h3 data-t="f1_title">开口即记，释放双手</h3>
+            <p data-t="f1_desc">像给老朋友发语音一样简单。Moodex 会捕捉你语调中的每一次停顿与起伏，将碎片化的碎碎念瞬间转化为结构化的生活志。</p>
+            <div class="chart-container">
+                <canvas id="voiceChart"></canvas>
+            </div>
+        </div>
+
+        <!-- 2. 双轨分析 -->
+        <div class="feature-card">
+            <div class="icon-box"><i class="fa-solid fa-brain"></i></div>
+            <h3 data-t="f2_title">听懂你的弦外之音</h3>
+            <p data-t="f2_desc">只有 AI 能读懂的“读心术”。透过文字表面，精准识别潜意识里的焦虑、期待或平静，比你自己更懂你的情绪。</p>
+            <div class="chart-container">
+                <canvas id="moodRadarChart"></canvas>
+            </div>
+        </div>
+
+        <!-- 3. RAG 回忆 -->
+        <div class="feature-card">
+            <div class="icon-box"><i class="fa-solid fa-clock-rotate-left"></i></div>
+            <h3 data-t="f3_title">连接当下的感受与过去的记忆</h3>
+            <p data-t="f3_desc">你的一生不再是散落的碎片。当你感到“今天很累”时，Moodex 会告诉你：“上次你有这种感觉是在半年前，那时你刚完成一个大项目。”</p>
+            <div class="chart-container">
+                <canvas id="memoryChart"></canvas>
+            </div>
+        </div>
+
+        <!-- 4. 人生 K 线 -->
+        <div class="feature-card">
+            <div class="icon-box"><i class="fa-solid fa-chart-line"></i></div>
+            <h3 data-t="f4_title">看见你的人生命运节律</h3>
+            <p data-t="f4_desc">情绪不是随机的，它是你生命的波浪。用直观的 K 线图可视化你的心理能量，发现你的低谷周期与高光时刻，掌握生活的节奏。</p>
+            <div class="chart-container">
+                <canvas id="moodLineChart"></canvas>
+            </div>
+        </div>
+
+        <!-- 5. 城市情绪分布 -->
+        <div class="feature-card">
+            <div class="icon-box"><i class="fa-solid fa-map-location-dot"></i></div>
+            <h3 data-t="f5_title">绘制你的快乐地图</h3>
+            <p data-t="f5_desc">哪座城市让你感到孤独？哪个街角藏着最多的欢笑？在地图上点亮你的情绪足迹，发现环境与心境的隐秘联系。</p>
+            <div class="chart-container">
+                <div id="cityMapContainer" class="map-wrapper">
+                    <!-- 地图背景和标记将由 JS 渲染 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. 关键词云图 -->
+        <div class="feature-card">
+            <div class="icon-box"><i class="fa-solid fa-tags"></i></div>
+            <h3 data-t="f6_title">一目了然的内心焦点</h3>
+            <p data-t="f6_desc">当局者迷。通过词云，你会惊讶地发现这一年里占据你大脑最多的词汇是什么。也许是“忙碌”，也许是“自由”，这是最真实的自我镜像。</p>
+            <div class="chart-container">
+                <canvas id="keywordChart"></canvas>
+            </div>
+        </div>
+
+        <!-- 7. 录音归档 -->
+        <div class="feature-card">
+            <div class="icon-box"><i class="fa-solid fa-box-archive"></i></div>
+            <h3 data-t="f7_title">声音的专属明信片</h3>
+            <p data-t="f7_desc">不仅是冷冰冰的文字，你的每一次倾诉都会被生成一张精美的情绪卡片。让声音有迹可循，让回忆触手可及。</p>
+            <div class="chart-container">
+                <canvas id="archiveChart"></canvas>
+            </div>
+        </div>
+
+        <!-- 8. 隐私安全 -->
+        <div class="feature-card">
+            <div class="icon-box"><i class="fa-solid fa-shield-halved"></i></div>
+            <h3 data-t="f8_title">你的秘密，只能属于你</h3>
+            <p data-t="f8_desc">我们深知日记是灵魂的私密角落。采用本地优先架构 + iCloud 个人云端加密。没有广告商，没有后台窥探，就连我们也无法查看你的任何一条记录。</p>
+            <div class="chart-container">
+                <canvas id="privacyChart"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <!-- 内测白名单区域 -->
+    <section id="waitlist" class="waitlist-section">
+        <div class="waitlist-content">
+            <h2 data-t="waitlist_title">准备好遇见你的第二大脑了吗？</h2>
+            <p data-t="waitlist_desc">Moodex 正在寻找首批 100 位种子用户。如果你也厌倦了没有回应的记录，欢迎加入 TestFlight，与我们共同定义下一代日记应用。</p>
+            
+            <a href="https://wj.qq.com/s2/25633201/2abe/?lang=zhs" target="_blank" class="waitlist-btn">
+                <span data-t="waitlist_btn">立即申请内测</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Moodex. All rights reserved.</p>
+        <br>
+        <a href="user-agreement.html" data-t="nav_agreement" id="footer-agreement-link">用户协议</a>
+        <a href="privacy.html" data-t="nav_privacy" id="footer-privacy-link">隐私政策</a>
+        <a href="mailto:hi@moodex.cc">hi@moodex.cc</a>
+    </footer>
+
+    <script>
+        // 多语言翻译
+        const translations = {
+            zh: {
+                hero_texts: [
+                    "Moodex: 你的情绪第二大脑",
+                    "Moodex: 听懂你，更记得住你",
+                    "Moodex: 把声音转化为人生洞察"
+                ],
+                nav_waitlist: "申请成为种子用户",
+                nav_agreement: "用户协议",
+                nav_privacy: "隐私政策",
+                hero_h1: "Moodex：听懂你，更记得住你",
+                hero_p: "不再对着虚空倾诉。一款能听懂弦外之音、并能从你的一生记忆中寻找答案的 AI 语音日记。",
+                hero_cta: "申请成为种子用户",
+                features_title: "核心功能展示",
+                features_subtitle: "结合最前沿的 AI 技术，为你提供全方位的情绪洞察与管理。",
+                f0_title: "AI 情绪对话",
+                f0_desc: "基于你的记录，利用 RAG+LLM 提供个性化对话，杜绝幻觉，比任何人都更懂你。",
+                f1_title: "开口即记，释放双手",
+                f1_desc: "像给老朋友发语音一样简单。Moodex 会捕捉你语调中的每一次停顿与起伏，将碎片化的碎碎念瞬间转化为结构化的生活志。",
+                f2_title: "听懂你的弦外之音",
+                f2_desc: "只有 AI 能读懂的“读心术”。透过文字表面，精准识别潜意识里的焦虑、期待或平静，比你自己更懂你的情绪。",
+                f3_title: "连接当下的感受与过去的记忆",
+                f3_desc: "你的一生不再是散落的碎片。当你感到“今天很累”时，Moodex 会告诉你：“上次你有这种感觉是在半年前，那时你刚完成一个大项目。”",
+                f4_title: "看见你的人生命运节律",
+                f4_desc: "情绪不是随机的，它是你生命的波浪。用直观的 K 线图可视化你的心理能量，发现你的低谷周期与高光时刻，掌握生活的节奏。",
+                f5_title: "绘制你的快乐地图",
+                f5_desc: "哪座城市让你感到孤独？哪个街角藏着最多的欢笑？在地图上点亮你的情绪足迹，发现环境与心境的隐秘联系。",
+                f6_title: "一目了然的内心焦点",
+                f6_desc: "当局者迷。通过词云，你会惊讶地发现这一年里占据你大脑最多的词汇是什么。也许是“忙碌”，也许是“自由”，这是最真实的自我镜像。",
+                f7_title: "声音的专属明信片",
+                f7_desc: "不仅是冷冰冰的文字，你的每一次倾诉都会被生成一张精美的情绪卡片。让声音有迹可循，让回忆触手可及。",
+                f8_title: "你的秘密，只能属于你",
+                f8_desc: "我们深知日记是灵魂的私密角落。采用本地优先架构 + iCloud 个人云端加密。没有广告商，没有后台窥探，就连我们也无法查看你的任何一条记录。",
+                waitlist_title: "准备好遇见你的第二大脑了吗？",
+                waitlist_desc: "Moodex 正在寻找首批 100 位种子用户。如果你也厌倦了没有回应的记录，欢迎加入 TestFlight，与我们共同定义下一代日记应用。",
+                waitlist_btn: "立即申请内测",
+                chart_explicit: "显性表达",
+                chart_implicit: "潜意识信号",
+                chart_mood_index: "情绪指数",
+                chart_volume: "音量",
+                chart_current: "当前日记",
+                chart_linked: "关联记忆",
+                chart_happy_index: "快乐指数",
+                chart_freq: "出现频率",
+                chart_protected: "已保护",
+                chart_processing: "进行中",
+                mood_happy: "快乐",
+                mood_anxious: "焦虑",
+                mood_calm: "平静",
+                mood_energetic: "活力",
+                mood_thinking: "思考",
+                mood_stress: "压力",
+                days: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"],
+                cities: ["北京", "深圳", "新加坡", "雅加达", "东京", "曼谷"],
+                keywords: ["充实", "期待", "疲惫", "感动", "焦虑"],
+                categories: ["生活记录", "工作灵感", "情感宣泄", "其他"]
+            },
+            en: {
+                hero_texts: [
+                    "Moodex: Your Emotional Second Brain",
+                    "Moodex: Understands You, Remembers You Better",
+                    "Moodex: Turning Voice into Life Insights"
+                ],
+                nav_waitlist: "Apply to be a Seed User",
+                nav_agreement: "Terms",
+                nav_privacy: "Privacy",
+                hero_h1: "Moodex: Understands You, Remembers You Better",
+                hero_p: "No more talking into the void. An AI voice diary that hears between the lines and finds answers from your lifetime of memories.",
+                hero_cta: "Apply to be a Seed User",
+                features_title: "Core Features",
+                features_subtitle: "Combining cutting-edge AI technology to provide you with comprehensive emotional insight and management.",
+                f0_title: "AI Emotional Dialogue",
+                f0_desc: "Personalized dialogue based on your records using RAG+LLM. Eliminates hallucinations, understanding you better than anyone else.",
+                f1_title: "Speak to Record, Free Your Hands",
+                f1_desc: "As simple as sending a voice message to an old friend. Moodex captures every pause and fluctuation in your tone, instantly transforming fragmented mumblings into a structured life journal.",
+                f2_title: "Hear the Unspoken",
+                f2_desc: "\"Mind-reading\" only AI can do. Beyond the surface words, it accurately identifies subconscious anxiety, expectation, or peace—knowing your emotions better than you do.",
+                f3_title: "Connect Today's Feelings with Yesterday's Memories",
+                f3_desc: "Your life is no longer scattered fragments. When you feel \"tired today,\" Moodex tells you: \"Last time you felt this way was six months ago, right after finishing that big project.\"",
+                f4_title: "See Your Life's Rhythm",
+                f4_desc: "Emotions aren't random; they are waves of your life. Visualize your mental energy with intuitive K-line charts, discover your cycles of lows and highs, and master the rhythm of living.",
+                f5_title: "Map Your Happiness",
+                f5_desc: "Which city makes you feel lonely? Which corner hides the most laughter? Light up your emotional footprints on the map and discover the hidden connection between environment and mindset.",
+                f6_title: "Your Inner Focus at a Glance",
+                f6_desc: "The observer often misses the obvious. Through word clouds, you'll be surprised to find which words occupied your mind most this year. Be it \"busy\" or \"free,\" it's the truest mirror of your self.",
+                f7_title: "Voice Postcards",
+                f7_desc: "Not just cold text—every sharing of yours generates an exquisite emotional card. Keep your voice traceable and your memories within reach.",
+                f8_title: "Your Secrets Belong Only to You",
+                f8_desc: "We know a diary is a private corner of the soul. Built on a local-first architecture with iCloud personal encryption. No advertisers, no backend prying—even we cannot access any of your records.",
+                waitlist_title: "Ready to Meet Your Second Brain?",
+                waitlist_desc: "Moodex is looking for its first 100 seed users. If you're tired of recording with no response, join our TestFlight and help us define the next generation of diary apps.",
+                waitlist_btn: "Apply for Beta Now",
+                chart_explicit: "Explicit",
+                chart_implicit: "Subconscious",
+                chart_mood_index: "Mood Index",
+                chart_volume: "Volume",
+                chart_current: "Current Entry",
+                chart_linked: "Linked Memory",
+                chart_happy_index: "Happiness Index",
+                chart_freq: "Frequency",
+                chart_protected: "Protected",
+                chart_processing: "In Progress",
+                mood_happy: "Happy",
+                mood_anxious: "Anxious",
+                mood_calm: "Calm",
+                mood_energetic: "Energetic",
+                mood_thinking: "Thinking",
+                mood_stress: "Stress",
+                days: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+                cities: ["Beijing", "Shenzhen", "Singapore", "Jakarta", "Tokyo", "Bangkok"],
+                keywords: ["Full", "Expectant", "Exhausted", "Moved", "Anxious"],
+                categories: ["Life", "Work", "Vent", "Others"]
+            },
+            id: {
+                hero_texts: [
+                    "Moodex: Otak Kedua Emosional Anda",
+                    "Moodex: Memahami Anda, Mengingat Anda Lebih Baik",
+                    "Moodex: Mengubah Suara menjadi Wawasan Hidup"
+                ],
+                nav_waitlist: "Daftar Jadi Pengguna Benih",
+                nav_agreement: "Perjanjian Pengguna",
+                nav_privacy: "Kebijakan Privasi",
+                hero_h1: "Moodex: Memahami Anda, Mengingat Anda Lebih Baik",
+                hero_p: "Tidak lagi berbicara ke ruang hampa. Buku harian suara AI yang memahami makna tersirat dan menemukan jawaban dari ingatan seumur hidup Anda.",
+                hero_cta: "Daftar Jadi Pengguna Benih",
+                features_title: "Fitur Utama",
+                features_subtitle: "Menggabungkan teknologi AI tercanggih untuk memberikan wawasan dan manajemen emosional yang komprehensif.",
+                f0_title: "Dialog Emosional AI",
+                f0_desc: "Dialog personal berdasarkan catatan Anda menggunakan RAG+LLM. Menghilangkan halusinasi, memahami Anda lebih baik daripada siapa pun.",
+                f1_title: "Bicara untuk Mencatat, Bebaskan Tangan",
+                f1_desc: "Semudah mengirim pesan suara ke teman lama. Moodex menangkap setiap jeda dan naik-turun nada bicara Anda, seketika mengubah celotehan menjadi catatan hidup yang terstruktur.",
+                f2_title: "Memahami Makna Tersirat",
+                f2_desc: "\"Membaca pikiran\" yang hanya bisa dilakukan AI. Di balik kata-kata, ia mengenali kecemasan, harapan, atau ketenangan alam bawah sadar—memahami emosi Anda lebih baik dari diri sendiri.",
+                f3_title: "Hubungkan Perasaan Hari Ini dengan Kenangan Masa Lalu",
+                f3_desc: "Hidup Anda bukan lagi potongan-potongan yang berserakan. Saat Anda merasa \"lelah hari ini,\" Moodex akan memberitahu: \"Terakhir kali Anda merasa seperti ini adalah enam bulan lalu, tepat setelah menyelesaikan proyek besar itu.\"",
+                f4_title: "Lihat Irama Nasib Hidup Anda",
+                f4_desc: "Emosi tidak acak; itu adalah gelombang hidup Anda. Visualisasikan energi mental dengan grafik K-line yang intuitif, temukan siklus naik-turun Anda, dan kuasai irama kehidupan.",
+                f5_title: "Gambar Peta Kebahagiaan Anda",
+                f5_desc: "Kota mana yang membuat Anda merasa kesepian? Sudut mana yang menyimpan tawa paling banyak? Terangi jejak emosional Anda di peta dan temukan hubungan tersembunyi antara lingkungan dan suasana hati.",
+                f6_title: "Fokus Batin Anda dalam Sekejap",
+                f6_desc: "Seringkali kita tidak menyadari diri sendiri. Melalui awan kata, Anda akan terkejut menemukan kata apa yang paling banyak mengisi pikiran Anda tahun ini. Mungkin \"sibuk\", mungkin \"bebas\"—inilah cermin diri yang paling nyata.",
+                f7_title: "Kartu Pos Suara yang Eksklusif",
+                f7_desc: "Bukan sekadar teks dingin, setiap curahan hati Anda akan diubah menjadi kartu emosi yang indah. Biarkan suara memiliki jejak, biarkan kenangan mudah dijangkau.",
+                f8_title: "Rahasia Anda, Hanya Milik Anda",
+                f8_desc: "Kami tahu buku harian adalah sudut pribadi jiwa. Menggunakan arsitektur prioritas lokal + enkripsi iCloud pribadi. Tanpa pengiklan, tanpa pengintaian backend, bahkan kami pun tidak bisa melihat catatan Anda.",
+                waitlist_title: "Siap Bertemu Otak Kedua Anda?",
+                waitlist_desc: "Moodex sedang mencari 100 pengguna benih pertama. Jika Anda bosan dengan catatan tanpa respon, bergabunglah di TestFlight dan bantu kami mendefinisikan aplikasi buku harian generasi berikutnya.",
+                waitlist_btn: "Daftar Beta Sekarang",
+                chart_explicit: "Eksplisit",
+                chart_implicit: "Bawah Sadar",
+                chart_mood_index: "Indeks Suasana",
+                chart_volume: "Volume",
+                chart_current: "Entri Saat Ini",
+                chart_linked: "Memori Terkait",
+                chart_happy_index: "Indeks Kebahagiaan",
+                chart_freq: "Frekuensi",
+                chart_protected: "Dilindungi",
+                chart_processing: "Berjalan",
+                mood_happy: "Bahagia",
+                mood_anxious: "Cemas",
+                mood_calm: "Tenang",
+                mood_energetic: "Energetik",
+                mood_thinking: "Berpikir",
+                mood_stress: "Stres",
+                days: ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"],
+                cities: ["Beijing", "Shenzhen", "Singapura", "Jakarta", "Tokyo", "Bangkok"],
+                keywords: ["Penuh", "Harapan", "Lelah", "Terharu", "Cemas"],
+                categories: ["Hidup", "Kerja", "Curhat", "Lainnya"]
+            }
+        };
+
+        // 自动检测语言
+        function detectLanguage() {
+            const savedLang = localStorage.getItem('moodex_lang');
+            if (savedLang) return savedLang;
+
+            const browserLang = navigator.language || navigator.userLanguage;
+            if (browserLang.startsWith('zh')) return 'zh';
+            if (browserLang.startsWith('id')) return 'id';
+            return 'en'; // 默认英文
+        }
+
+        let currentLang = detectLanguage();
+
+        function toggleLangDropdown(event) {
+            event.stopPropagation();
+            document.querySelector('.lang-dropdown').classList.toggle('active');
+        }
+
+        // 点击页面其他区域关闭下拉框
+        document.addEventListener('click', () => {
+            document.querySelector('.lang-dropdown').classList.remove('active');
+        });
+
+        function switchLang(lang) {
+            currentLang = lang;
+            localStorage.setItem('moodex_lang', lang);
+            updateContent();
+            // 重新初始化图表以应用新语言
+            initCharts();
+            // 切换后关闭下拉框
+            document.querySelector('.lang-dropdown').classList.remove('active');
+        }
+
+        let typewriterInterval;
+        let typewriterTimeout;
+
+        function startTypewriter(texts) {
+            const textEl = document.getElementById('typewriter-text');
+            if (!textEl) return;
+
+            // 清除之前的定时器
+            if (typewriterInterval) clearInterval(typewriterInterval);
+            if (typewriterTimeout) clearTimeout(typewriterTimeout);
+
+            let textIndex = 0;
+            let charIndex = 0;
+            let isDeleting = false;
+            let typeSpeed = 100;
+
+            function type() {
+                const currentText = texts[textIndex];
+                
+                if (isDeleting) {
+                    textEl.textContent = currentText.substring(0, charIndex - 1);
+                    charIndex--;
+                    typeSpeed = 50; // 删除速度快
+                } else {
+                    textEl.textContent = currentText.substring(0, charIndex + 1);
+                    charIndex++;
+                    typeSpeed = 100; // 打字速度正常
+                }
+
+                if (!isDeleting && charIndex === currentText.length) {
+                    isDeleting = true;
+                    typeSpeed = 3000; // 停留 3 秒
+                } else if (isDeleting && charIndex === 0) {
+                    isDeleting = false;
+                    textIndex = (textIndex + 1) % texts.length;
+                    typeSpeed = 500; // 切换下一句前暂停
+                }
+
+                typewriterTimeout = setTimeout(type, typeSpeed);
+            }
+
+            type();
+        }
+
+        function updateContent() {
+            const t = translations[currentLang];
+            document.querySelectorAll('[data-t]').forEach(el => {
+                const key = el.getAttribute('data-t');
+                if (t[key]) {
+                    el.innerHTML = t[key];
+                }
+            });
+
+            // 启动打字机效果
+            if (t.hero_texts) {
+                startTypewriter(t.hero_texts);
+            }
+
+            // 更新导航栏状态 (Dropdown)
+            const langLabels = {
+                'zh': 'ZH',
+                'en': 'EN',
+                'id': 'ID'
+            };
+            document.getElementById('current-lang-btn').querySelector('span').innerText = langLabels[currentLang];
+            
+            document.querySelectorAll('.lang-dropdown-content span').forEach(span => {
+                span.classList.toggle('active', span.id === 'lang-' + currentLang);
+            });
+
+            // 更新法律文件链接
+            let suffix = '.html';
+            if (currentLang === 'en') suffix = '_en.html';
+            else if (currentLang === 'id') suffix = '_id.html';
+            document.getElementById('footer-agreement-link').href = 'user-agreement' + suffix;
+            document.getElementById('footer-privacy-link').href = 'privacy' + suffix;
+
+            // 更新页面标题
+            if (currentLang === 'en') {
+                document.title = 'Moodex - Understands You, Remembers You Better';
+                document.documentElement.lang = 'en';
+            } else if (currentLang === 'id') {
+                document.title = 'Moodex - Memahami Anda, Mengingat Anda Lebih Baik';
+                document.documentElement.lang = 'id';
+            } else {
+                document.title = 'Moodex - 听懂你，更记得住你';
+                document.documentElement.lang = 'zh-CN';
+            }
+        }
+
+        // 图表实例引用，用于销毁重建
+        let charts = {};
+
+        function renderCityMap() {
+            const container = document.getElementById('cityMapContainer');
+            if (!container) return;
+            
+            // 清空旧内容
+            container.innerHTML = '';
+            
+            // 城市数据 (估计的百分比坐标)
+            const cityData = [
+                { name: currentLang === 'zh' ? '北京' : (currentLang === 'id' ? 'Beijing' : 'Beijing'), x: 50, y: 15, score: 85 },
+                { name: currentLang === 'zh' ? '深圳' : (currentLang === 'id' ? 'Shenzhen' : 'Shenzhen'), x: 55, y: 40, score: 92 },
+                { name: currentLang === 'zh' ? '新加坡' : (currentLang === 'id' ? 'Singapura' : 'Singapore'), x: 45, y: 65, score: 88 },
+                { name: currentLang === 'zh' ? '雅加达' : (currentLang === 'id' ? 'Jakarta' : 'Jakarta'), x: 48, y: 85, score: 45 }, // 低分示例
+                { name: currentLang === 'zh' ? '东京' : (currentLang === 'id' ? 'Tokyo' : 'Tokyo'), x: 85, y: 25, score: 78 },
+                { name: currentLang === 'zh' ? '曼谷' : (currentLang === 'id' ? 'Bangkok' : 'Bangkok'), x: 20, y: 55, score: 82 }
+            ];
+
+            cityData.forEach(city => {
+                const marker = document.createElement('div');
+                const isHigh = city.score >= 60;
+                marker.className = `city-marker ${isHigh ? 'high' : 'low'}`;
+                marker.style.left = city.x + '%';
+                marker.style.top = city.y + '%';
+
+                // 添加波纹
+                for (let i = 0; i < 3; i++) {
+                    const ripple = document.createElement('div');
+                    ripple.className = 'ripple';
+                    marker.appendChild(ripple);
+                }
+
+                const label = document.createElement('div');
+                label.className = 'city-label';
+                label.innerText = city.name;
+                marker.appendChild(label);
+
+                container.appendChild(marker);
+            });
+        }
+
+        function initCharts() {
+            const t = translations[currentLang];
+            
+            // 销毁旧图表
+            Object.values(charts).forEach(c => c.destroy());
+
+            // 渲染城市地图
+            renderCityMap();
+
+            // 1. 情绪雷达图 (双轨分析)
+            const radarCtx = document.getElementById('moodRadarChart').getContext('2d');
+            charts.radar = new Chart(radarCtx, {
+                type: 'radar',
+                data: {
+                    labels: [t.mood_happy, t.mood_anxious, t.mood_calm, t.mood_energetic, t.mood_thinking, t.mood_stress],
+                    datasets: [{
+                        label: t.chart_explicit,
+                        data: [80, 40, 60, 70, 50, 30],
+                        backgroundColor: 'rgba(99, 102, 241, 0.2)',
+                        borderColor: '#6366f1',
+                        pointBackgroundColor: '#6366f1',
+                        borderWidth: 2
+                    }, {
+                        label: t.chart_implicit,
+                        data: [60, 70, 40, 50, 80, 60],
+                        backgroundColor: 'rgba(236, 72, 153, 0.2)',
+                        borderColor: '#ec4899',
+                        pointBackgroundColor: '#ec4899',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { color: 'rgba(0, 0, 0, 0.05)' },
+                            grid: { color: 'rgba(0, 0, 0, 0.05)' },
+                            pointLabels: {
+                                font: { size: 11 }
+                            },
+                            ticks: { display: false }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                boxWidth: 10,
+                                font: { size: 10 }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 2. 情绪波动图 (人生 K 线)
+            const lineCtx = document.getElementById('moodLineChart').getContext('2d');
+            const gradient = lineCtx.createLinearGradient(0, 0, 0, 200);
+            gradient.addColorStop(0, 'rgba(99, 102, 241, 0.4)');
+            gradient.addColorStop(1, 'rgba(99, 102, 241, 0.0)');
+
+            charts.line = new Chart(lineCtx, {
+                type: 'line',
+                data: {
+                    labels: t.days,
+                    datasets: [{
+                        label: t.chart_mood_index,
+                        data: [65, 59, 80, 81, 56, 85, 90],
+                        fill: true,
+                        backgroundColor: gradient,
+                        borderColor: '#6366f1',
+                        tension: 0.4,
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            grid: { display: false },
+                            ticks: { font: { size: 10 } }
+                        },
+                        y: {
+                            display: false,
+                            min: 0,
+                            max: 100
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return (currentLang === 'en' ? 'Mood: ' : '心情: ') + context.parsed.y;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 3. 语音波形图 (语音记录)
+            const voiceCtx = document.getElementById('voiceChart').getContext('2d');
+            charts.voice = new Chart(voiceCtx, {
+                type: 'bar',
+                data: {
+                    labels: Array.from({length: 30}, (_, i) => i),
+                    datasets: [{
+                        label: t.chart_volume,
+                        data: Array.from({length: 30}, () => Math.random() * 50 + 20),
+                        backgroundColor: '#6366f1',
+                        borderRadius: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: 2000,
+                        easing: 'easeInOutQuart'
+                    },
+                    scales: {
+                        x: { display: false },
+                        y: { display: false }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+
+            // 4. 记忆关联散点图 (记忆回溯)
+            const memoryCtx = document.getElementById('memoryChart').getContext('2d');
+            charts.memory = new Chart(memoryCtx, {
+                type: 'bubble',
+                data: {
+                    datasets: [{
+                        label: t.chart_current,
+                        data: [{x: 50, y: 50, r: 15}],
+                        backgroundColor: '#6366f1'
+                    }, {
+                        label: t.chart_linked + ' 1',
+                        data: [{x: 35, y: 65, r: 10}],
+                        backgroundColor: 'rgba(99, 102, 241, 0.5)'
+                    }, {
+                        label: t.chart_linked + ' 2',
+                        data: [{x: 65, y: 40, r: 8}],
+                        backgroundColor: 'rgba(99, 102, 241, 0.4)'
+                    }, {
+                        label: t.chart_linked + ' 3',
+                        data: [{x: 45, y: 30, r: 12}],
+                        backgroundColor: 'rgba(99, 102, 241, 0.6)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { display: false, min: 0, max: 100 },
+                        y: { display: false, min: 0, max: 100 }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+
+            // 6. 关键词极坐标图 (词云替代)
+            const keywordCtx = document.getElementById('keywordChart').getContext('2d');
+            charts.keyword = new Chart(keywordCtx, {
+                type: 'polarArea',
+                data: {
+                    labels: t.keywords,
+                    datasets: [{
+                        label: t.chart_freq,
+                        data: [18, 15, 12, 10, 8],
+                        backgroundColor: [
+                            'rgba(99, 102, 241, 0.8)',
+                            'rgba(236, 72, 153, 0.7)',
+                            'rgba(99, 102, 241, 0.6)',
+                            'rgba(236, 72, 153, 0.5)',
+                            'rgba(99, 102, 241, 0.4)'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: { ticks: { display: false }, grid: { display: false } }
+                    },
+                    plugins: {
+                        legend: { position: 'right', labels: { boxWidth: 10, font: { size: 10 } } }
+                    }
+                }
+            });
+
+            // 7. 录音归档分布图 (Pie)
+            const archiveCtx = document.getElementById('archiveChart').getContext('2d');
+            charts.archive = new Chart(archiveCtx, {
+                type: 'pie',
+                data: {
+                    labels: t.categories,
+                    datasets: [{
+                        data: [45, 25, 20, 10],
+                        backgroundColor: [
+                            '#6366f1',
+                            '#818cf8',
+                            '#a5b4fc',
+                            '#e0e7ff'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { boxWidth: 10, font: { size: 10 } }
+                        }
+                    }
+                }
+            });
+
+            // 8. 隐私安全状态 (Doughnut)
+            const privacyCtx = document.getElementById('privacyChart').getContext('2d');
+            charts.privacy = new Chart(privacyCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: [t.chart_protected, t.chart_processing],
+                    datasets: [{
+                        data: [100, 0],
+                        backgroundColor: ['#6366f1', '#f1f5f9'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '80%',
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: false }
+                    }
+                },
+                plugins: [{
+                    id: 'text',
+                    beforeDraw: function(chart) {
+                        const width = chart.width,
+                              height = chart.height,
+                              ctx = chart.ctx;
+                        ctx.restore();
+                        const fontSize = (height / 114).toFixed(2);
+                        ctx.font = fontSize + "em sans-serif";
+                        ctx.textBaseline = "middle";
+                        ctx.fillStyle = "#6366f1";
+                        const text = "100%",
+                              textX = Math.round((width - ctx.measureText(text).width) / 2),
+                              textY = height / 2;
+                        ctx.fillText(text, textX, textY);
+                        ctx.save();
+                    }
+                }]
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // 设置初始语言
+            updateContent();
+            
+            // 通用图表配置
+            Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+            Chart.defaults.color = '#64748b';
+            Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(255, 255, 255, 0.9)';
+            Chart.defaults.plugins.tooltip.titleColor = '#1e293b';
+            Chart.defaults.plugins.tooltip.bodyColor = '#475569';
+            Chart.defaults.plugins.tooltip.borderColor = '#e2e8f0';
+            Chart.defaults.plugins.tooltip.borderWidth = 1;
+            Chart.defaults.plugins.tooltip.padding = 10;
+            Chart.defaults.plugins.tooltip.cornerRadius = 8;
+            Chart.defaults.plugins.tooltip.displayColors = false;
+
+            // 初始化图表
+            initCharts();
+        });
+    </script>
+
+</body>
+</html>
