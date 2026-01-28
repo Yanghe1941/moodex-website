@@ -274,11 +274,6 @@
             position: relative;
         }
 
-        .chart-container canvas {
-            width: 100% !important;
-            height: 100% !important;
-        }
-
         /* 城市地图可视化 */
         .map-wrapper {
             position: relative;
@@ -324,166 +319,159 @@
 
         .city-marker.high .ripple { border: 2px solid rgba(34, 197, 94, 0.5); }
         .city-marker.low .ripple { border: 2px solid rgba(239, 68, 68, 0.5); }
-
-        .ripple:nth-child(2) { animation-delay: 0.5s; }
-        .ripple:nth-child(3) { animation-delay: 1s; }
-
-        @keyframes ripple-out {
-            0% { width: 0; height: 0; opacity: 1; }
-            100% { width: 50px; height: 50px; opacity: 0; }
-        }
-
-        /* 内测白名单区域 */
-        .waitlist-section {
-            padding: 80px 5%;
-            margin: 60px 5%;
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            border-radius: 24px;
-            text-align: center;
-            border: 1px solid #e2e8f0;
-        }
-
-        .waitlist-content {
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .waitlist-section h2 {
-            font-size: 2rem;
-            margin-bottom: 16px;
-            color: #1e293b;
-        }
-
-        .waitlist-section p {
-            color: #64748b;
-            margin-bottom: 32px;
-            font-size: 1.1rem;
-        }
-
-        .waitlist-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 16px 32px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: background 0.2s, transform 0.1s;
-            text-decoration: none;
-            gap: 8px;
-        }
-
-        .waitlist-btn:hover {
-            background: var(--secondary-color);
-        }
-        
-        .waitlist-btn:active {
-            transform: scale(0.98);
-        }
-
-        /* 页脚 */
-        footer {
-            text-align: center;
-            padding: 40px 5%;
-            border-top: 1px solid #e5e7eb;
-            color: #9ca3af;
-            font-size: 0.9rem;
-            background-color: #fff;
-        }
-
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-
-        footer a {
-            color: #6b7280;
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-        
-        footer a:hover {
-            color: var(--primary-color);
-        }
-
-        /* 移动端适配 */
-        @media (max-width: 768px) {
-            .nav-links { display: none; } /* 优化：在移动端隐藏顶部导航链接，避免换行 */
-            .hero { padding-top: 120px; }
-            .hero h1 { font-size: 2.5rem; min-height: 3.6rem; /* 防止文字切换时高度跳动 */ }
-            .hero p { font-size: 1.1rem; line-height: 1.6; margin-bottom: 25px; }
-            .features { grid-template-columns: 1fr; }
-            
-            .waitlist-section {
-                margin: 40px 20px;
-                padding: 40px 20px;
-            }
-        }
-
-        /* 打字机光标效果 */
-        .cursor {
-            display: inline-block;
-            width: 3px;
-            background-color: #6366f1;
-            animation: blink 1s step-end infinite;
-            margin-left: 5px;
-            vertical-align: middle;
-            height: 1em;
-            position: relative;
-            top: -0.1em;
-        }
-
-        @keyframes blink {
-            from, to { opacity: 1; }
-            50% { opacity: 0; }
-        }
-    </style>
-</head>
-<body>
-
-    <nav>
-        <a href="#" class="logo">
-            <i class="fa-solid fa-microphone-lines"></i> Moodex
-        </a>
-        <div style="display: flex; align-items: center;">
-            <div class="nav-links">
-                <a href="#waitlist" data-t="nav_waitlist">申请成为种子用户</a>
-            </div>
-            <div class="lang-dropdown">
-                <button class="lang-dropbtn" id="current-lang-btn" onclick="toggleLangDropdown(event)">
-                    <i class="fa-solid fa-globe"></i>
-                    <span>ZH</span>
-                    <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem; opacity: 0.5;"></i>
-                </button>
-                <div class="lang-dropdown-content">
-                    <div class="lang-dropdown-inner">
-                        <span onclick="switchLang('zh')" id="lang-zh">简体中文</span>
-                        <span onclick="switchLang('en')" id="lang-en">English</span>
-                        <span onclick="switchLang('id')" id="lang-id">Bahasa Indonesia</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <header class="hero">
-        <h1 style="min-height: 1.2em;">
-            <span id="typewriter-text"></span><span class="cursor">&nbsp;</span>
-        </h1>
-        <p data-t="hero_p" style="line-height: 1.8; margin-bottom: 30px; max-width: 700px; margin-left: auto; margin-right: auto;">不再对着虚空倾诉。一款能听懂弦外之音、并能从你的一生记忆中寻找答案的 AI 语音日记。</p>
-        
-        <a href="https://wj.qq.com/s2/25633201/2abe/?lang=zhs" target="_blank" class="cta-button">
-            <i class="fa-brands fa-apple"></i>
-            <span data-t="hero_cta">申请成为种子用户</span>
-        </a>
-    </header>
+   322|        .ripple:nth-child(2) { animation-delay: 0.5s; }
+   323|        .ripple:nth-child(3) { animation-delay: 1s; }
+   324|
+   325|        @keyframes ripple-out {
+   326|            0% { width: 0; height: 0; opacity: 1; }
+   327|            100% { width: 50px; height: 50px; opacity: 0; }
+   328|        }
+   329|
+   330|        /* 内测白名单区域 */
+   331|        .waitlist-section {
+   332|            padding: 80px 5%;
+   333|            margin: 60px 5%;
+   334|            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+   335|            border-radius: 24px;
+   336|            text-align: center;
+   337|            border: 1px solid #e2e8f0;
+   338|        }
+   339|
+   340|        .waitlist-content {
+   341|            max-width: 600px;
+   342|            margin: 0 auto;
+   343|        }
+   344|
+   345|        .waitlist-section h2 {
+   346|            font-size: 2rem;
+   347|            margin-bottom: 16px;
+   348|            color: #1e293b;
+   349|        }
+   350|
+   351|        .waitlist-section p {
+   352|            color: #64748b;
+   353|            margin-bottom: 32px;
+   354|            font-size: 1.1rem;
+   355|        }
+   356|
+   357|        .waitlist-btn {
+   358|            display: inline-flex;
+   359|            align-items: center;
+   360|            justify-content: center;
+   361|            background: var(--primary-color);
+   362|            color: white;
+   363|            border: none;
+   364|            padding: 16px 32px;
+   365|            border-radius: 50px;
+   366|            font-weight: 600;
+   367|            font-size: 1.1rem;
+   368|            cursor: pointer;
+   369|            transition: background 0.2s, transform 0.1s;
+   370|            text-decoration: none;
+   371|            gap: 8px;
+   372|        }
+   373|
+   374|        .waitlist-btn:hover {
+   375|            background: var(--secondary-color);
+   376|        }
+   377|        
+   378|        .waitlist-btn:active {
+   379|            transform: scale(0.98);
+   380|        }
+   381|
+   382|        /* 页脚 */
+   383|        footer {
+   384|            text-align: center;
+   385|            padding: 40px 5%;
+   386|            border-top: 1px solid #e5e7eb;
+   387|            color: #9ca3af;
+   388|            font-size: 0.9rem;
+   389|            margin-top: 0;
+   390|            background-color: #fff;
+   391|        }
+   392|
+   393|        footer a {
+   394|            color: #6b7280;
+   395|            text-decoration: none;
+   396|            margin: 0 10px;
+   397|            transition: color 0.2s;
+   398|        }
+   399|        
+   400|        footer a:hover {
+   401|            color: var(--primary-color);
+   402|        }
+   403|
+   404|        /* 移动端适配 */
+   405|        @media (max-width: 768px) {
+   406|            .nav-links { display: none; } /* 优化：在移动端隐藏顶部导航链接，避免换行 */
+   407|            .hero { padding-top: 120px; }
+   408|            .hero h1 { font-size: 2.5rem; min-height: 3.6rem; /* 防止文字切换时高度跳动 */ }
+   409|            .hero p { font-size: 1.1rem; line-height: 1.6; margin-bottom: 25px; }
+   410|            .features { grid-template-columns: 1fr; }
+   411|            
+   412|            .waitlist-section {
+   413|                margin: 40px 20px;
+   414|                padding: 40px 20px;
+   415|            }
+   416|        }
+   417|
+   418|        /* 打字机光标效果 */
+   419|        .cursor {
+   420|            display: inline-block;
+   421|            width: 3px;
+   422|            background-color: #6366f1;
+   423|            animation: blink 1s step-end infinite;
+   424|            margin-left: 5px;
+   425|            vertical-align: middle;
+   426|            height: 1em;
+   427|            position: relative;
+   428|            top: -0.1em;
+   429|        }
+   430|
+   431|        @keyframes blink {
+   432|            from, to { opacity: 1; }
+   433|            50% { opacity: 0; }
+   434|        }
+   435|    </style>
+   436|</head>
+   437|<body>
+   438|
+   439|    <nav>
+   440|        <a href="#" class="logo">
+   441|            <i class="fa-solid fa-microphone-lines"></i> Moodex
+   442|        </a>
+   443|        <div style="display: flex; align-items: center;">
+   444|            <div class="nav-links">
+   445|                <a href="#waitlist" data-t="nav_waitlist">申请成为种子用户</a>
+   446|            </div>
+   447|            <div class="lang-dropdown">
+   448|                <button class="lang-dropbtn" id="current-lang-btn" onclick="toggleLangDropdown(event)">
+   449|                    <i class="fa-solid fa-globe"></i>
+   450|                    <span>ZH</span>
+   451|                    <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem; opacity: 0.5;"></i>
+   452|                </button>
+   453|                <div class="lang-dropdown-content">
+   454|                    <div class="lang-dropdown-inner">
+   455|                        <span onclick="switchLang('zh')" id="lang-zh">简体中文</span>
+   456|                        <span onclick="switchLang('en')" id="lang-en">English</span>
+   457|                        <span onclick="switchLang('id')" id="lang-id">Bahasa Indonesia</span>
+   458|                    </div>
+   459|                </div>
+   460|            </div>
+   461|        </div>
+   462|    </nav>
+   463|
+   464|    <header class="hero">
+   465|        <h1 style="min-height: 1.2em;">
+   466|            <span id="typewriter-text"></span><span class="cursor">&nbsp;</span>
+   467|        </h1>
+   468|        <p data-t="hero_p" style="line-height: 1.8; margin-bottom: 30px; max-width: 700px; margin-left: auto; margin-right: auto;">不再对着虚空倾诉。一款能听懂弦外之音、并能从你的一生记忆中寻找答案的 AI 语音日记。</p>
+   469|        
+   470|        <a href="https://wj.qq.com/s2/25633201/2abe/?lang=zhs" target="_blank" class="cta-button">
+   471|            <i class="fa-brands fa-apple"></i>
+   472|            <span data-t="hero_cta">申请成为种子用户</span>
+   473|        </a>
+   474|    </header>
 
     <div style="text-align: center; padding: 60px 5% 0;">
         <h2 style="font-size: 2.5rem; margin-bottom: 10px; color: #1e293b;" data-t="features_title">核心功能展示</h2>
@@ -593,7 +581,7 @@
             <h2 data-t="waitlist_title">准备好遇见你的第二大脑了吗？</h2>
             <p data-t="waitlist_desc">Moodex 正在寻找首批 100 位种子用户。如果你也厌倦了没有回应的记录，欢迎加入 TestFlight，与我们共同定义下一代日记应用。</p>
             
-            <a href="https://wj.qq.com/s2/25633201/2abe/?lang=zhs" target="_blank" class="waitlist-btn">
+            <a href="https://wj.qq.com/s2/25633201/2abe/?lang=zhs" target="_blank" class="cta-button">
                 <span data-t="waitlist_btn">立即申请内测</span>
                 <i class="fa-solid fa-arrow-right"></i>
             </a>
@@ -603,255 +591,13 @@
     <footer>
         <p>&copy; 2026 Moodex. All rights reserved.</p>
         <br>
-        <div class="footer-links">
-            <a href="user-agreement.html" data-t="nav_agreement" id="footer-agreement-link">用户协议</a>
-            <a href="privacy.html" data-t="nav_privacy" id="footer-privacy-link">隐私政策</a>
-            <a href="docs.html#changelog" data-t="nav_changelog">版本更新介绍</a>
-            <a href="mailto:hi@moodex.cc">hi@moodex.cc</a>
-        </div>
+        <a href="user-agreement.html" data-t="nav_agreement" id="footer-agreement-link">用户协议</a>
+        <a href="privacy.html" data-t="nav_privacy" id="footer-privacy-link">隐私政策</a>
+        <a href="docs.html#changelog" data-t="nav_changelog">版本更新介绍</a>
+        <a href="mailto:hi@moodex.cc">hi@moodex.cc</a>
     </footer>
 
     <script>
-        const __charts = {};
-
-        function __destroyChart(id) {
-            if (__charts[id]) {
-                try { __charts[id].destroy(); } catch (e) {}
-                delete __charts[id];
-            }
-        }
-
-        function __createChart(canvasId, config) {
-            const el = document.getElementById(canvasId);
-            if (!el || typeof Chart === 'undefined') return;
-            __destroyChart(canvasId);
-            __charts[canvasId] = new Chart(el, config);
-        }
-
-        function __renderCityMap() {
-            const container = document.getElementById('cityMapContainer');
-            if (!container) return;
-            container.innerHTML = '';
-
-            const t = (typeof translations !== 'undefined' && typeof currentLang !== 'undefined')
-                ? translations[currentLang]
-                : null;
-
-            const cities = (t && t.cities) ? t.cities : ['Beijing', 'Shenzhen', 'Singapore', 'Jakarta', 'Tokyo', 'Bangkok'];
-            const points = [
-                { x: 24, y: 35, level: 'high' },
-                { x: 26, y: 55, level: 'high' },
-                { x: 60, y: 62, level: 'low' },
-                { x: 58, y: 78, level: 'low' },
-                { x: 78, y: 44, level: 'high' },
-                { x: 70, y: 72, level: 'high' }
-            ];
-
-            points.forEach((p, idx) => {
-                const marker = document.createElement('div');
-                marker.className = 'city-marker ' + p.level;
-                marker.style.left = p.x + '%';
-                marker.style.top = p.y + '%';
-
-                const ripple1 = document.createElement('div');
-                ripple1.className = 'ripple';
-                const ripple2 = document.createElement('div');
-                ripple2.className = 'ripple';
-                const ripple3 = document.createElement('div');
-                ripple3.className = 'ripple';
-                marker.appendChild(ripple1);
-                marker.appendChild(ripple2);
-                marker.appendChild(ripple3);
-
-                const label = document.createElement('div');
-                label.className = 'city-label';
-                label.textContent = cities[idx] || '';
-                marker.appendChild(label);
-
-                container.appendChild(marker);
-            });
-        }
-
-        function initCharts() {
-            if (typeof Chart === 'undefined') return;
-
-            const t = (typeof translations !== 'undefined' && typeof currentLang !== 'undefined')
-                ? translations[currentLang]
-                : null;
-
-            const days = (t && t.days) ? t.days : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-            const moodExplicit = (t && t.chart_explicit) ? t.chart_explicit : 'Explicit';
-            const moodImplicit = (t && t.chart_implicit) ? t.chart_implicit : 'Subconscious';
-            const moodIndex = (t && t.chart_mood_index) ? t.chart_mood_index : 'Mood Index';
-            const volume = (t && t.chart_volume) ? t.chart_volume : 'Volume';
-            const currentEntry = (t && t.chart_current) ? t.chart_current : 'Current';
-            const linkedMemory = (t && t.chart_linked) ? t.chart_linked : 'Linked';
-            const happyIndex = (t && t.chart_happy_index) ? t.chart_happy_index : 'Happiness';
-            const freq = (t && t.chart_freq) ? t.chart_freq : 'Frequency';
-            const protectedLabel = (t && t.chart_protected) ? t.chart_protected : 'Protected';
-            const processingLabel = (t && t.chart_processing) ? t.chart_processing : 'In Progress';
-            const keywords = (t && t.keywords) ? t.keywords : ['Full', 'Expectant', 'Exhausted', 'Moved', 'Anxious'];
-
-            __createChart('voiceChart', {
-                type: 'bar',
-                data: {
-                    labels: days,
-                    datasets: [{
-                        label: volume,
-                        data: [8, 6, 7, 5, 9, 4, 6],
-                        backgroundColor: 'rgba(99, 102, 241, 0.5)',
-                        borderColor: 'rgba(99, 102, 241, 1)',
-                        borderWidth: 1,
-                        borderRadius: 6
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        x: { grid: { display: false } },
-                        y: { beginAtZero: true, grid: { color: 'rgba(226,232,240,0.8)' } }
-                    }
-                }
-            });
-
-            __createChart('moodRadarChart', {
-                type: 'radar',
-                data: {
-                    labels: ['A', 'B', 'C', 'D', 'E'],
-                    datasets: [
-                        {
-                            label: moodExplicit,
-                            data: [65, 59, 80, 81, 56],
-                            fill: true,
-                            backgroundColor: 'rgba(99, 102, 241, 0.2)',
-                            borderColor: 'rgba(99, 102, 241, 1)',
-                            pointBackgroundColor: 'rgba(99, 102, 241, 1)'
-                        },
-                        {
-                            label: moodImplicit,
-                            data: [28, 48, 40, 19, 86],
-                            fill: true,
-                            backgroundColor: 'rgba(236, 72, 153, 0.15)',
-                            borderColor: 'rgba(236, 72, 153, 1)',
-                            pointBackgroundColor: 'rgba(236, 72, 153, 1)'
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { position: 'bottom' } },
-                    scales: { r: { grid: { color: 'rgba(226,232,240,0.8)' }, angleLines: { color: 'rgba(226,232,240,0.8)' }, suggestedMin: 0, suggestedMax: 100 } }
-                }
-            });
-
-            __createChart('memoryChart', {
-                type: 'doughnut',
-                data: {
-                    labels: [currentEntry, linkedMemory],
-                    datasets: [{
-                        data: [35, 65],
-                        backgroundColor: ['rgba(99, 102, 241, 0.9)', 'rgba(148, 163, 184, 0.6)'],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { position: 'bottom' } },
-                    cutout: '65%'
-                }
-            });
-
-            __createChart('moodLineChart', {
-                type: 'line',
-                data: {
-                    labels: days,
-                    datasets: [{
-                        label: moodIndex,
-                        data: [62, 58, 70, 66, 78, 52, 64],
-                        borderColor: 'rgba(99, 102, 241, 1)',
-                        backgroundColor: 'rgba(99, 102, 241, 0.15)',
-                        tension: 0.35,
-                        fill: true,
-                        pointRadius: 3
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        x: { grid: { display: false } },
-                        y: { beginAtZero: false, grid: { color: 'rgba(226,232,240,0.8)' } }
-                    }
-                }
-            });
-
-            __createChart('keywordChart', {
-                type: 'bar',
-                data: {
-                    labels: keywords,
-                    datasets: [{
-                        label: freq,
-                        data: [12, 9, 7, 6, 10],
-                        backgroundColor: 'rgba(236, 72, 153, 0.35)',
-                        borderColor: 'rgba(236, 72, 153, 1)',
-                        borderWidth: 1,
-                        borderRadius: 6
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        x: { grid: { display: false } },
-                        y: { beginAtZero: true, grid: { color: 'rgba(226,232,240,0.8)' } }
-                    }
-                }
-            });
-
-            __createChart('archiveChart', {
-                type: 'pie',
-                data: {
-                    labels: [protectedLabel, processingLabel],
-                    datasets: [{
-                        data: [72, 28],
-                        backgroundColor: ['rgba(34, 197, 94, 0.85)', 'rgba(59, 130, 246, 0.75)'],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { position: 'bottom' } }
-                }
-            });
-
-            __createChart('privacyChart', {
-                type: 'doughnut',
-                data: {
-                    labels: [protectedLabel, processingLabel],
-                    datasets: [{
-                        data: [88, 12],
-                        backgroundColor: ['rgba(34, 197, 94, 0.85)', 'rgba(148, 163, 184, 0.5)'],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { position: 'bottom' } },
-                    cutout: '68%'
-                }
-            });
-
-            __renderCityMap();
-        }
-
         document.addEventListener('DOMContentLoaded', function() {
             updateContent();
             
