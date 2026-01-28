@@ -9,6 +9,7 @@ const translations = {
         nav_agreement: "用户协议",
         nav_privacy: "隐私政策",
         nav_changelog: "版本更新介绍",
+        home_title: "Moodex - 听懂你，更记得住你",
         hero_h1: "Moodex：听懂你，更记得住你",
         hero_p: "不再对着虚空倾诉。一款能听懂弦外之音、并能从你的一生记忆中寻找答案的 AI 语音日记。",
         hero_cta: "申请成为种子用户",
@@ -97,6 +98,7 @@ const translations = {
         nav_agreement: "Terms",
         nav_privacy: "Privacy",
         nav_changelog: "Releases",
+        home_title: "Moodex - Understands You, Remembers You Better",
         hero_h1: "Moodex: Understands You, Remembers You Better",
         hero_p: "No more talking into the void. An AI voice diary that hears between the lines and finds answers from your lifetime of memories.",
         hero_cta: "Apply to be a Seed User",
@@ -185,6 +187,7 @@ const translations = {
         nav_agreement: "Perjanjian Pengguna",
         nav_privacy: "Kebijakan Privasi",
         nav_changelog: "Pembaruan Versi",
+        home_title: "Moodex - Memahami Anda, Mengingat Anda Lebih Baik",
         hero_h1: "Moodex: Memahami Anda, Mengingat Anda Lebih Baik",
         hero_p: "Tidak lagi berbicara ke ruang hampa. Buku harian suara AI yang memahami makna tersirat dan menemukan jawaban dari ingatan seumur hidup Anda.",
         hero_cta: "Daftar Jadi Pengguna Benih",
@@ -357,13 +360,42 @@ function updateContent() {
         }
     });
 
-    // 启动打字机效果
-    const typewriterElement = document.getElementById('typewriter-text');
-    if (typewriterElement && t.hero_texts) {
-        startTypewriter(t.hero_texts);
+    // Determine current page
+    const pathname = window.location.pathname;
+    const isHomePage = pathname === '/' || pathname === '/index.html';
+    const isDocsPage = pathname === '/docs.html';
+
+    // Update page title based on current page
+    if (isHomePage) {
+        document.title = t.home_title;
+    } else if (isDocsPage) {
+        document.title = t.docs_title;
+    } else {
+        // Fallback title for other pages if necessary
+        document.title = t.home_title || 'Moodex';
     }
 
-    // 更新导航栏状态 (Dropdown)
+    // Set document language
+    if (currentLang === 'en') {
+        document.documentElement.lang = 'en';
+    } else if (currentLang === 'id') {
+        document.documentElement.lang = 'id';
+    } else {
+        document.documentElement.lang = 'zh-CN';
+    }
+
+    // Start typewriter effect only on the home page
+    const typewriterElement = document.getElementById('typewriter-text');
+    if (isHomePage && typewriterElement && t.hero_texts) {
+        startTypewriter(t.hero_texts);
+    } else if (!isHomePage && typewriterElement) {
+        // Clear typewriter if not on home page
+        typewriterElement.textContent = '';
+        if (typewriterInterval) clearInterval(typewriterInterval);
+        if (typewriterTimeout) clearTimeout(typewriterTimeout);
+    }
+
+    // Update navigation bar status (Dropdown)
     const langLabels = {
         'zh': 'ZH',
         'en': 'EN',
@@ -378,7 +410,7 @@ function updateContent() {
         span.classList.toggle('active', span.id === 'lang-' + currentLang);
     });
 
-    // 更新法律文件链接
+    // Update legal document links
     let suffix = '.html';
     if (currentLang === 'en') suffix = '_en.html';
     else if (currentLang === 'id') suffix = '_id.html';
@@ -386,16 +418,4 @@ function updateContent() {
     const privacyLink = document.getElementById('footer-privacy-link');
     if (agreementLink) agreementLink.href = 'user-agreement' + suffix;
     if (privacyLink) privacyLink.href = 'privacy' + suffix;
-
-    // 更新页面标题
-    if (currentLang === 'en') {
-        document.title = t.docs_title || 'Moodex - Understands You, Remembers You Better';
-        document.documentElement.lang = 'en';
-    } else if (currentLang === 'id') {
-        document.title = t.docs_title || 'Moodex - Memahami Anda, Mengingat Anda Lebih Baik';
-        document.documentElement.lang = 'id';
-    } else {
-        document.title = t.docs_title || 'Moodex - 听懂你，更记得住你';
-        document.documentElement.lang = 'zh-CN';
-    }
 }
