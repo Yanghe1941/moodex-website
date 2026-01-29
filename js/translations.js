@@ -9,6 +9,7 @@ const translations = {
         nav_agreement: "用户协议",
         nav_privacy: "隐私政策",
         nav_changelog: "版本更新介绍",
+        home_title: "Moodex - 听懂你，更记得住你",
         hero_h1: "Moodex：听懂你，更记得住你",
         hero_p: "不再对着虚空倾诉。一款能听懂弦外之音、并能从你的一生记忆中寻找答案的 AI 语音日记。",
         hero_cta: "申请成为种子用户",
@@ -97,6 +98,7 @@ const translations = {
         nav_agreement: "Terms",
         nav_privacy: "Privacy",
         nav_changelog: "Releases",
+        home_title: "Moodex - Understands You, Remembers You Better",
         hero_h1: "Moodex: Understands You, Remembers You Better",
         hero_p: "No more talking into the void. An AI voice diary that hears between the lines and finds answers from your lifetime of memories.",
         hero_cta: "Apply to be a Seed User",
@@ -185,6 +187,7 @@ const translations = {
         nav_agreement: "Perjanjian Pengguna",
         nav_privacy: "Kebijakan Privasi",
         nav_changelog: "Pembaruan Versi",
+        home_title: "Moodex - Memahami Anda, Mengingat Anda Lebih Baik",
         hero_h1: "Moodex: Memahami Anda, Mengingat Anda Lebih Baik",
         hero_p: "Tidak lagi berbicara ke ruang hampa. Buku harian suara AI yang memahami makna tersirat dan menemukan jawaban dari ingatan seumur hidup Anda.",
         hero_cta: "Daftar Jadi Pengguna Benih",
@@ -201,13 +204,13 @@ const translations = {
         f4_title: "Lihat Irama Nasib Hidup Anda",
         f4_desc: "Emosi tidak acak; itu adalah gelombang hidup Anda. Visualisasikan energi mental dengan grafik K-line yang intuitif, temukan siklus naik-turun Anda, dan kuasai irama kehidupan.",
         f5_title: "Gambar Peta Kebahagiaan Anda",
-        f5_desc: "Kota mana yang membuat Anda merasa kesepian? Sudut mana yang menyimpan tawa paling banyak? Terangi jejak emosional Anda在地图上发现环境与心境的隐秘联系。",
+        f5_desc: "Kota mana yang membuat Anda merasa kesepian? Sudut mana yang menyimpan tawa paling banyak? Terangi jejak emosional Anda di peta dan temukan hubungan tersembunyi antara lingkungan dan suasana hati.",
         f6_title: "Fokus Batin Anda dalam Sekejap",
-        f6_desc: "Seringkali kita tidak menyadari diri sendiri。通过词云，你会惊讶地发现这一年里占据你大脑最多的词汇是什么。也许是\"sibuk\"，也许是\"bebas\"—inilah cermin diri yang paling nyata。",
+        f6_desc: "Seringkali kita tidak menyadari diri sendiri. Melalui awan kata, Anda akan terkejut menemukan kata apa yang paling banyak mengisi pikiran Anda tahun ini. Mungkin \"sibuk\", mungkin \"bebas\"—inilah cermin diri yang paling nyata.",
         f7_title: "Kartu Pos Suara yang Eksklusif",
-        f7_desc: "Bukan sekadar teks dingin，每一个分享都会成为一张精美的情绪卡片。让声音有迹可循，让回忆触手可及。",
+        f7_desc: "Bukan sekadar teks dingin, setiap curahan hati Anda akan diubah menjadi kartu emosi yang indah. Biarkan suara memiliki jejak, biarkan kenangan mudah dijangkau.",
         f8_title: "Rahasia Anda, Hanya Milik Anda",
-        f8_desc: "Kami tahu buku harian是灵魂的私密角落。采用本地优先架构 + 加密 iCloud 个人云。没有广告商，没有后台窥探，就连我们也无法访问你的任何一条记录。",
+        f8_desc: "Kami tahu buku harian adalah sudut pribadi jiwa. Menggunakan arsitektur prioritas lokal + enkripsi iCloud pribadi. Tanpa pengiklan, tanpa pengintaian backend, bahkan kami pun tidak bisa melihat catatan Anda.",
         waitlist_title: "Siap Bertemu Otak Kedua Anda?",
         waitlist_desc: "Moodex sedang mencari 100 pengguna benih pertama. Jika Anda bosan dengan catatan tanpa respon, bergabunglah di TestFlight dan bantu kami mendefinisikan aplikasi buku harian generasi berikutnya.",
         waitlist_btn: "Daftar Beta Sekarang",
@@ -357,13 +360,42 @@ function updateContent() {
         }
     });
 
-    // 启动打字机效果
-    const typewriterElement = document.getElementById('typewriter-text');
-    if (typewriterElement && t.hero_texts) {
-        startTypewriter(t.hero_texts);
+    // Determine current page
+    const pathname = window.location.pathname;
+    const isHomePage = pathname === '/' || pathname === '/index.html';
+    const isDocsPage = pathname === '/docs.html';
+
+    // Update page title based on current page
+    if (isHomePage) {
+        document.title = t.home_title;
+    } else if (isDocsPage) {
+        document.title = t.docs_title;
+    } else {
+        // Fallback title for other pages if necessary
+        document.title = t.home_title || 'Moodex';
     }
 
-    // 更新导航栏状态 (Dropdown)
+    // Set document language
+    if (currentLang === 'en') {
+        document.documentElement.lang = 'en';
+    } else if (currentLang === 'id') {
+        document.documentElement.lang = 'id';
+    } else {
+        document.documentElement.lang = 'zh-CN';
+    }
+
+    // Start typewriter effect only on the home page
+    const typewriterElement = document.getElementById('typewriter-text');
+    if (isHomePage && typewriterElement && t.hero_texts) {
+        startTypewriter(t.hero_texts);
+    } else if (!isHomePage && typewriterElement) {
+        // Clear typewriter if not on home page
+        typewriterElement.textContent = '';
+        if (typewriterInterval) clearInterval(typewriterInterval);
+        if (typewriterTimeout) clearTimeout(typewriterTimeout);
+    }
+
+    // Update navigation bar status (Dropdown)
     const langLabels = {
         'zh': 'ZH',
         'en': 'EN',
@@ -378,7 +410,7 @@ function updateContent() {
         span.classList.toggle('active', span.id === 'lang-' + currentLang);
     });
 
-    // 更新法律文件链接
+    // Update legal document links
     let suffix = '.html';
     if (currentLang === 'en') suffix = '_en.html';
     else if (currentLang === 'id') suffix = '_id.html';
@@ -386,16 +418,4 @@ function updateContent() {
     const privacyLink = document.getElementById('footer-privacy-link');
     if (agreementLink) agreementLink.href = 'user-agreement' + suffix;
     if (privacyLink) privacyLink.href = 'privacy' + suffix;
-
-    // 更新页面标题
-    if (currentLang === 'en') {
-        document.title = t.docs_title || 'Moodex - Understands You, Remembers You Better';
-        document.documentElement.lang = 'en';
-    } else if (currentLang === 'id') {
-        document.title = t.docs_title || 'Moodex - Memahami Anda, Mengingat Anda Lebih Baik';
-        document.documentElement.lang = 'id';
-    } else {
-        document.title = t.docs_title || 'Moodex - 听懂你，更记得住你';
-        document.documentElement.lang = 'zh-CN';
-    }
 }
