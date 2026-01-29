@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-t="docs_title">Moodex 文档中心 - 版本更新与介绍</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="vendor/fontawesome/css/all.min.css" onerror="this.onerror=null;this.href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css';">
     <script src="js/translations.js"></script>
     <style>
         :root {
@@ -156,6 +156,18 @@
         <section id="changelog">
             <h2 data-t="docs_changelog_title">更新记录</h2>
             
+            <div class="changelog-entry">
+                <span class="version-date">V0.1.1 - 2026-01-29</span>
+                <h3>TestFlight 内测准备版本</h3>
+                <ul>
+                    <li><b>新增「AI 使用量统计」</b>：你可以在个人中心查看自己使用 AI 的大致消耗情况（录音分析、AI 对话分别统计），数据只对你本人可见。</li>
+                    <li><b>新增内测工具入口</b>：为 TestFlight 测试准备了一个不影响日常使用的调试入口（普通用户不易触达）。</li>
+                    <li><b>语音时长显示更清晰</b>：会根据时长自动切换显示单位（秒/分钟/小时），并修复了极短语音显示异常的问题。</li>
+                    <li><b>AI 分析更不容易失败</b>：提升 AI 相关请求的等待时间上限，减少复杂分析时出现的“超时失败”。</li>
+                    <li><b>服务稳定性提升</b>：优化健康检查接口，保证监控工具能够更稳定地检测服务状态。</li>
+                </ul>
+            </div>
+
             <div class="changelog-entry">
                 <span class="version-date" data-t="docs_changelog_v01_date">V0.1 - 2026-01-23</span>
                 <h3 data-t="docs_changelog_v01_title">首次内测发布 (Testing Beta)</h3>
