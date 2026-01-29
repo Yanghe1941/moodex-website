@@ -295,6 +295,7 @@
         }
 
         .city-marker.high { background-color: #22c55e; }
+        .city-marker.mid { background-color: #6366f1; }
         .city-marker.low { background-color: #ef4444; }
 
         .city-label {
@@ -318,6 +319,7 @@
         }
 
         .city-marker.high .ripple { border: 2px solid rgba(34, 197, 94, 0.5); }
+        .city-marker.mid .ripple { border: 2px solid rgba(99, 102, 241, 0.45); }
         .city-marker.low .ripple { border: 2px solid rgba(239, 68, 68, 0.5); }
        .ripple:nth-child(2) { animation-delay: 0.5s; }
        .ripple:nth-child(3) { animation-delay: 1s; }
@@ -861,6 +863,47 @@
                         cutout: '80%',
                         plugins: { legend: { display: false }, tooltip: { enabled: false } }
                     }
+                });
+            }
+
+            const cityMap = document.getElementById('cityMapContainer');
+            if (cityMap) {
+                cityMap.innerHTML = '';
+
+                cityMap.style.background = 'radial-gradient(120% 120% at 20% 10%, rgba(99, 102, 241, 0.10) 0%, rgba(15, 23, 42, 0.02) 45%, rgba(236, 72, 153, 0.06) 100%)';
+                cityMap.style.borderColor = 'rgba(99, 102, 241, 0.18)';
+
+                const grid = document.createElement('div');
+                grid.style.position = 'absolute';
+                grid.style.inset = '0';
+                grid.style.backgroundImage = 'radial-gradient(rgba(99, 102, 241, 0.16) 1px, transparent 1px)';
+                grid.style.backgroundSize = '18px 18px';
+                grid.style.opacity = '0.45';
+                grid.style.pointerEvents = 'none';
+                cityMap.appendChild(grid);
+
+                const cities = [
+                    { x: 22, y: 32, label: 'Beijing', cls: 'high' },
+                    { x: 52, y: 45, label: 'Shenzhen', cls: 'mid' },
+                    { x: 72, y: 60, label: 'Singapore', cls: 'low' },
+                    { x: 64, y: 68, label: 'Jakarta', cls: 'mid' },
+                    { x: 78, y: 38, label: 'Tokyo', cls: 'high' }
+                ];
+
+                cities.forEach((c) => {
+                    const marker = document.createElement('div');
+                    marker.className = `city-marker ${c.cls}`;
+                    marker.style.left = `${c.x}%`;
+                    marker.style.top = `${c.y}%`;
+                    marker.title = c.label;
+                    marker.innerHTML = '<span class="ripple"></span><span class="ripple"></span><span class="ripple"></span>';
+
+                    const label = document.createElement('div');
+                    label.className = 'city-label';
+                    label.textContent = c.label;
+                    marker.appendChild(label);
+
+                    cityMap.appendChild(marker);
                 });
             }
         }
