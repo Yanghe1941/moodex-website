@@ -584,6 +584,190 @@
     </footer>
 
     <script>
+        let charts = {};
+
+        function initCharts() {
+            if (typeof Chart === 'undefined') return;
+
+            const ids = [
+                'voiceChart',
+                'moodRadarChart',
+                'memoryChart',
+                'moodLineChart',
+                'keywordChart',
+                'archiveChart',
+                'privacyChart'
+            ];
+
+            ids.forEach((id) => {
+                const existing = Chart.getChart(id);
+                if (existing) existing.destroy();
+            });
+
+            charts = {};
+
+            const getCtx = (id) => {
+                const el = document.getElementById(id);
+                if (!el) return null;
+                return el.getContext('2d');
+            };
+
+            const voiceCtx = getCtx('voiceChart');
+            if (voiceCtx) {
+                charts.voice = new Chart(voiceCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: Array.from({ length: 30 }, (_, i) => i + 1),
+                        datasets: [{
+                            data: Array.from({ length: 30 }, () => Math.random() * 50 + 20),
+                            backgroundColor: '#6366f1',
+                            borderRadius: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: { x: { display: false }, y: { display: false } },
+                        plugins: { legend: { display: false } }
+                    }
+                });
+            }
+
+            const moodRadarCtx = getCtx('moodRadarChart');
+            if (moodRadarCtx) {
+                charts.moodRadar = new Chart(moodRadarCtx, {
+                    type: 'radar',
+                    data: {
+                        labels: ['Happy', 'Anxious', 'Calm', 'Energetic', 'Thinking', 'Stress'],
+                        datasets: [{
+                            data: [70, 35, 55, 60, 45, 30],
+                            borderColor: '#6366f1',
+                            backgroundColor: 'rgba(99, 102, 241, 0.2)',
+                            pointBackgroundColor: '#6366f1'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: { r: { ticks: { display: false }, grid: { color: 'rgba(148, 163, 184, 0.25)' } } },
+                        plugins: { legend: { display: false } }
+                    }
+                });
+            }
+
+            const memoryCtx = getCtx('memoryChart');
+            if (memoryCtx) {
+                charts.memory = new Chart(memoryCtx, {
+                    type: 'bubble',
+                    data: {
+                        datasets: [{
+                            data: [{ x: 50, y: 50, r: 15 }],
+                            backgroundColor: '#6366f1'
+                        }, {
+                            data: [{ x: 35, y: 65, r: 10 }, { x: 65, y: 40, r: 8 }, { x: 45, y: 30, r: 12 }],
+                            backgroundColor: 'rgba(99, 102, 241, 0.45)'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: { x: { display: false, min: 0, max: 100 }, y: { display: false, min: 0, max: 100 } },
+                        plugins: { legend: { display: false } }
+                    }
+                });
+            }
+
+            const moodLineCtx = getCtx('moodLineChart');
+            if (moodLineCtx) {
+                charts.moodLine = new Chart(moodLineCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                        datasets: [{
+                            data: [62, 58, 66, 52, 70, 74, 68],
+                            borderColor: '#6366f1',
+                            backgroundColor: 'rgba(99, 102, 241, 0.15)',
+                            tension: 0.35,
+                            fill: true,
+                            pointRadius: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: { x: { display: false }, y: { display: false } },
+                        plugins: { legend: { display: false } }
+                    }
+                });
+            }
+
+            const keywordCtx = getCtx('keywordChart');
+            if (keywordCtx) {
+                charts.keyword = new Chart(keywordCtx, {
+                    type: 'polarArea',
+                    data: {
+                        labels: ['Busy', 'Free', 'Tired', 'Hope', 'Focus'],
+                        datasets: [{
+                            data: [18, 15, 12, 10, 8],
+                            backgroundColor: [
+                                'rgba(99, 102, 241, 0.8)',
+                                'rgba(236, 72, 153, 0.7)',
+                                'rgba(99, 102, 241, 0.6)',
+                                'rgba(236, 72, 153, 0.5)',
+                                'rgba(99, 102, 241, 0.4)'
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: { r: { ticks: { display: false }, grid: { display: false } } },
+                        plugins: { legend: { display: false } }
+                    }
+                });
+            }
+
+            const archiveCtx = getCtx('archiveChart');
+            if (archiveCtx) {
+                charts.archive = new Chart(archiveCtx, {
+                    type: 'pie',
+                    data: {
+                        labels: ['Life', 'Work', 'Emotion', 'Other'],
+                        datasets: [{
+                            data: [45, 25, 20, 10],
+                            backgroundColor: ['#6366f1', '#818cf8', '#a5b4fc', '#e0e7ff'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } }
+                    }
+                });
+            }
+
+            const privacyCtx = getCtx('privacyChart');
+            if (privacyCtx) {
+                charts.privacy = new Chart(privacyCtx, {
+                    type: 'doughnut',
+                    data: {
+                        datasets: [{
+                            data: [100, 0],
+                            backgroundColor: ['#6366f1', '#f1f5f9'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '80%',
+                        plugins: { legend: { display: false }, tooltip: { enabled: false } }
+                    }
+                });
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             updateContent();
             
