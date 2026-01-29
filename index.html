@@ -589,6 +589,48 @@
         function initCharts() {
             if (typeof Chart === 'undefined') return;
 
+            const theme = {
+                primary: '#6366f1',
+                primarySoft: 'rgba(99, 102, 241, 0.18)',
+                primarySoft2: 'rgba(99, 102, 241, 0.08)',
+                accent: '#ec4899',
+                text: '#475569',
+                grid: 'rgba(148, 163, 184, 0.18)',
+                border: 'rgba(148, 163, 184, 0.12)'
+            };
+
+            const mkVGradient = (ctx, top, bottom) => {
+                const g = ctx.createLinearGradient(0, 0, 0, ctx.canvas.height || 200);
+                g.addColorStop(0, top);
+                g.addColorStop(1, bottom);
+                return g;
+            };
+
+            const mkGrid = () => ({
+                color: theme.grid,
+                drawBorder: false
+            });
+
+            const baseOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: { duration: 900, easing: 'easeOutQuart' },
+                interaction: { mode: 'nearest', intersect: false },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                        titleColor: '#0f172a',
+                        bodyColor: theme.text,
+                        borderColor: theme.border,
+                        borderWidth: 1,
+                        cornerRadius: 10,
+                        padding: 10,
+                        displayColors: false
+                    }
+                }
+            };
+
             const ids = [
                 'voiceChart',
                 'moodRadarChart',
@@ -614,21 +656,24 @@
 
             const voiceCtx = getCtx('voiceChart');
             if (voiceCtx) {
+                const barGradient = mkVGradient(voiceCtx, 'rgba(99, 102, 241, 0.95)', 'rgba(99, 102, 241, 0.35)');
                 charts.voice = new Chart(voiceCtx, {
                     type: 'bar',
                     data: {
                         labels: Array.from({ length: 30 }, (_, i) => i + 1),
                         datasets: [{
                             data: Array.from({ length: 30 }, () => Math.random() * 50 + 20),
-                            backgroundColor: '#6366f1',
-                            borderRadius: 2
+                            backgroundColor: barGradient,
+                            borderRadius: 10,
+                            borderSkipped: false
                         }]
                     },
                     options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: { x: { display: false }, y: { display: false } },
-                        plugins: { legend: { display: false } }
+                        ...baseOptions,
+                        scales: {
+                            x: { display: false, grid: mkGrid() },
+                            y: { display: false, grid: mkGrid() }
+                        }
                     }
                 });
             }
@@ -641,16 +686,26 @@
                         labels: ['Happy', 'Anxious', 'Calm', 'Energetic', 'Thinking', 'Stress'],
                         datasets: [{
                             data: [70, 35, 55, 60, 45, 30],
-                            borderColor: '#6366f1',
-                            backgroundColor: 'rgba(99, 102, 241, 0.2)',
-                            pointBackgroundColor: '#6366f1'
+                            borderColor: theme.primary,
+                            borderWidth: 2,
+                            backgroundColor: theme.primarySoft,
+                            pointBackgroundColor: '#ffffff',
+                            pointBorderColor: theme.primary,
+                            pointBorderWidth: 2,
+                            pointRadius: 3,
+                            pointHoverRadius: 5
                         }]
                     },
                     options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: { r: { ticks: { display: false }, grid: { color: 'rgba(148, 163, 184, 0.25)' } } },
-                        plugins: { legend: { display: false } }
+                        ...baseOptions,
+                        scales: {
+                            r: {
+                                ticks: { display: false },
+                                grid: { color: theme.grid },
+                                angleLines: { color: theme.grid },
+                                pointLabels: { color: theme.text, font: { size: 10, weight: '500' } }
+                            }
+                        }
                     }
                 });
             }
@@ -662,41 +717,48 @@
                     data: {
                         datasets: [{
                             data: [{ x: 50, y: 50, r: 15 }],
-                            backgroundColor: '#6366f1'
+                            backgroundColor: theme.primary,
+                            borderColor: 'rgba(255, 255, 255, 0.9)',
+                            borderWidth: 2
                         }, {
                             data: [{ x: 35, y: 65, r: 10 }, { x: 65, y: 40, r: 8 }, { x: 45, y: 30, r: 12 }],
-                            backgroundColor: 'rgba(99, 102, 241, 0.45)'
+                            backgroundColor: theme.primarySoft,
+                            borderColor: 'rgba(99, 102, 241, 0.35)',
+                            borderWidth: 1
                         }]
                     },
                     options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
+                        ...baseOptions,
                         scales: { x: { display: false, min: 0, max: 100 }, y: { display: false, min: 0, max: 100 } },
-                        plugins: { legend: { display: false } }
+                        elements: { point: { hoverRadius: 8 } }
                     }
                 });
             }
 
             const moodLineCtx = getCtx('moodLineChart');
             if (moodLineCtx) {
+                const lineFill = mkVGradient(moodLineCtx, 'rgba(99, 102, 241, 0.28)', 'rgba(99, 102, 241, 0.02)');
                 charts.moodLine = new Chart(moodLineCtx, {
                     type: 'line',
                     data: {
                         labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
                         datasets: [{
                             data: [62, 58, 66, 52, 70, 74, 68],
-                            borderColor: '#6366f1',
-                            backgroundColor: 'rgba(99, 102, 241, 0.15)',
-                            tension: 0.35,
+                            borderColor: theme.primary,
+                            backgroundColor: lineFill,
+                            tension: 0.38,
                             fill: true,
-                            pointRadius: 0
+                            borderWidth: 2,
+                            pointRadius: 0,
+                            pointHitRadius: 10
                         }]
                     },
                     options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: { x: { display: false }, y: { display: false } },
-                        plugins: { legend: { display: false } }
+                        ...baseOptions,
+                        scales: {
+                            x: { display: false, grid: mkGrid() },
+                            y: { display: false, grid: mkGrid() }
+                        }
                     }
                 });
             }
@@ -710,19 +772,25 @@
                         datasets: [{
                             data: [18, 15, 12, 10, 8],
                             backgroundColor: [
-                                'rgba(99, 102, 241, 0.8)',
-                                'rgba(236, 72, 153, 0.7)',
-                                'rgba(99, 102, 241, 0.6)',
-                                'rgba(236, 72, 153, 0.5)',
-                                'rgba(99, 102, 241, 0.4)'
-                            ]
+                                'rgba(99, 102, 241, 0.85)',
+                                'rgba(236, 72, 153, 0.72)',
+                                'rgba(99, 102, 241, 0.62)',
+                                'rgba(236, 72, 153, 0.52)',
+                                'rgba(99, 102, 241, 0.42)'
+                            ],
+                            borderColor: 'rgba(255, 255, 255, 0.85)',
+                            borderWidth: 2
                         }]
                     },
                     options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: { r: { ticks: { display: false }, grid: { display: false } } },
-                        plugins: { legend: { display: false } }
+                        ...baseOptions,
+                        scales: {
+                            r: {
+                                ticks: { display: false },
+                                grid: { color: theme.grid },
+                                angleLines: { color: theme.grid }
+                            }
+                        }
                     }
                 });
             }
@@ -736,13 +804,13 @@
                         datasets: [{
                             data: [45, 25, 20, 10],
                             backgroundColor: ['#6366f1', '#818cf8', '#a5b4fc', '#e0e7ff'],
-                            borderWidth: 0
+                            borderColor: 'rgba(255, 255, 255, 0.92)',
+                            borderWidth: 2,
+                            hoverOffset: 6
                         }]
                     },
                     options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: { legend: { display: false } }
+                        ...baseOptions
                     }
                 });
             }
@@ -754,13 +822,14 @@
                     data: {
                         datasets: [{
                             data: [100, 0],
-                            backgroundColor: ['#6366f1', '#f1f5f9'],
-                            borderWidth: 0
+                            backgroundColor: [theme.primary, '#f1f5f9'],
+                            borderColor: 'rgba(255, 255, 255, 0.92)',
+                            borderWidth: 2,
+                            hoverOffset: 4
                         }]
                     },
                     options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
+                        ...baseOptions,
                         cutout: '80%',
                         plugins: { legend: { display: false }, tooltip: { enabled: false } }
                     }
