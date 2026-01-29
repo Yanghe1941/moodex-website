@@ -6,8 +6,14 @@
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <title>Moodex - 听懂你，更记得住你</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="dns-prefetch" href="//cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="//unpkg.com">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://unpkg.com" crossorigin>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" onerror="this.onerror=null;this.href='https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css';">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" onerror="this.onerror=null;this.src='https://unpkg.com/chart.js@4.4.1/dist/chart.umd.js';"></script>
     <script src="js/translations.js"></script>
     <style>
         :root {
@@ -883,24 +889,28 @@
                 cityMap.appendChild(grid);
 
                 const cities = [
-                    { x: 22, y: 32, label: 'Beijing', cls: 'high' },
-                    { x: 52, y: 45, label: 'Shenzhen', cls: 'mid' },
-                    { x: 72, y: 60, label: 'Singapore', cls: 'low' },
-                    { x: 64, y: 68, label: 'Jakarta', cls: 'mid' },
-                    { x: 78, y: 38, label: 'Tokyo', cls: 'high' }
+                    { key: 'beijing', i18nIndex: 0, x: 22, y: 32, moodLevel: 'high' },
+                    { key: 'shenzhen', i18nIndex: 1, x: 52, y: 45, moodLevel: 'mid' },
+                    { key: 'singapore', i18nIndex: 2, x: 72, y: 60, moodLevel: 'low' },
+                    { key: 'jakarta', i18nIndex: 3, x: 64, y: 68, moodLevel: 'mid' },
+                    { key: 'tokyo', i18nIndex: 4, x: 78, y: 38, moodLevel: 'high' }
                 ];
 
                 cities.forEach((c) => {
+                    const cityLabel = (typeof translations !== 'undefined' && typeof currentLang !== 'undefined' && translations[currentLang] && translations[currentLang].cities)
+                        ? (translations[currentLang].cities[c.i18nIndex] || c.key)
+                        : c.key;
+
                     const marker = document.createElement('div');
-                    marker.className = `city-marker ${c.cls}`;
+                    marker.className = `city-marker ${c.moodLevel}`;
                     marker.style.left = `${c.x}%`;
                     marker.style.top = `${c.y}%`;
-                    marker.title = c.label;
+                    marker.title = cityLabel;
                     marker.innerHTML = '<span class="ripple"></span><span class="ripple"></span><span class="ripple"></span>';
 
                     const label = document.createElement('div');
                     label.className = 'city-label';
-                    label.textContent = c.label;
+                    label.textContent = cityLabel;
                     marker.appendChild(label);
 
                     cityMap.appendChild(marker);
@@ -912,14 +922,14 @@
             updateContent();
             
             Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-            Chart.defaults.color = '#64748b';
-            Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(255, 255, 255, 0.9)';
-            Chart.defaults.plugins.tooltip.titleColor = '#1e293b';
-            Chart.defaults.plugins.tooltip.bodyColor = '#475569';
-            Chart.defaults.plugins.tooltip.borderColor = '#e2e8f0';
+            Chart.defaults.color = '#94a3b8';
+            Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(15, 23, 42, 0.92)';
+            Chart.defaults.plugins.tooltip.titleColor = '#e2e8f0';
+            Chart.defaults.plugins.tooltip.bodyColor = '#cbd5e1';
+            Chart.defaults.plugins.tooltip.borderColor = 'rgba(99, 102, 241, 0.25)';
             Chart.defaults.plugins.tooltip.borderWidth = 1;
-            Chart.defaults.plugins.tooltip.padding = 10;
-            Chart.defaults.plugins.tooltip.cornerRadius = 8;
+            Chart.defaults.plugins.tooltip.padding = 12;
+            Chart.defaults.plugins.tooltip.cornerRadius = 10;
             Chart.defaults.plugins.tooltip.displayColors = false;
 
             if (typeof initCharts === 'function') {

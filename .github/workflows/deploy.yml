@@ -17,6 +17,17 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      - name: Guardrails (conflict markers / line-number pollution)
+        run: |
+          set -euo pipefail
+          if grep -R --line-number -E '^(<<<<<<<|=======|>>>>>>>)' .; then
+            echo "Found merge conflict markers. Please resolve before deploy."
+            exit 1
+          fi
+          if grep -n -E '^[[:space:]]*[0-9]{1,4}\|' index.html; then
+            echo "Found line-number pollution (NNN|) in index.html. Please remove before deploy."
+            exit 1
+          fi
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
